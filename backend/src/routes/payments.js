@@ -44,7 +44,7 @@ router.post('/initialize', requireAuth, paymentsLimiter, async (req, res) => {
         amount: plan.amount,
         reference,
         currency: 'NGN',
-        callback_url: `${process.env.FRONTEND_URL || 'http://localhost:5500'}/payment-success.html`,
+        callback_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success`,
         metadata: {
           user_id: req.user.id,
           plan: plan_id,

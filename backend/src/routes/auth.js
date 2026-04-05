@@ -18,7 +18,10 @@ const router = express.Router();
 ────────────────────────────────────────────────────────────── */
 const COOKIE_OPTS = {
   httpOnly: true,
-  sameSite: 'strict',
+  // In production frontend (Vercel) and backend (Railway) are on different domains.
+  // SameSite=None + Secure is required for cross-domain cookies over HTTPS.
+  // In development both run on localhost so SameSite=Strict is fine.
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
   secure: process.env.NODE_ENV === 'production',
   path: '/',
 };

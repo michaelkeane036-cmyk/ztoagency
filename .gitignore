@@ -2,11 +2,13 @@
 node_modules/
 **/node_modules/
 
-# Environment variables
+# Environment variables — never commit real .env files
 .env
 .env.local
 .env.*.local
 backend/.env
+frontend/.env
+frontend/.env.local
 
 # Build output
 dist/
