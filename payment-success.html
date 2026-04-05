@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful — ZTO Marketing Agency</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A0F1E; --card: #111827; --gold: #FBBF24; --teal: #0F766E;
+      --white: #F8FAFC; --text: #F1F5F9; --muted: #CBD5E1; --border: rgba(255,255,255,0.12);
+      --ff-head: 'Bricolage Grotesque', system-ui, sans-serif;
+      --ff-body: 'DM Sans', system-ui, sans-serif;
+    }
+    body {
+      font-family: var(--ff-body); background: var(--navy); color: var(--text);
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 24px;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 24px; padding: 56px 48px; max-width: 520px;
+      width: 100%; text-align: center; box-shadow: 0 32px 64px rgba(0,0,0,0.4);
+    }
+    .logo {
+      font-family: var(--ff-head); font-size: 1.5rem; font-weight: 800;
+      color: var(--white); text-decoration: none; display: inline-block; margin-bottom: 36px;
+    }
+    .logo .z { color: var(--gold); }
+    .icon-wrap {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(15,118,110,0.15); border: 2px solid rgba(15,118,110,0.4);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+    }
+    .icon-wrap svg { width: 40px; height: 40px; color: #2dd4bf; }
+    .icon-wrap.error-icon { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); }
+    .icon-wrap.error-icon svg { color: #f87171; }
+    h1 {
+      font-family: var(--ff-head); font-size: 1.8rem; font-weight: 800;
+      margin-bottom: 12px;
+    }
+    p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 12px; }
+    .ref-box {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; margin: 24px 0;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .ref-box span { color: var(--white); font-weight: 600; letter-spacing: 0.04em; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 14px 28px; border: none; border-radius: 10px;
+      font-family: var(--ff-head); font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: opacity 0.2s;
+      margin: 8px 6px 0;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-gold  { background: var(--gold); color: #0A0F1E; }
+    .btn-ghost { background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid var(--border); }
+    .loading-state { display: none; }
+    .loading-state p { color: var(--muted); }
+    .spinner {
+      width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--gold); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="logo"><span class="z">Z</span>TO</a>
+
+    <!-- Loading while we verify -->
+    <div id="loading-state">
+      <div class="spinner"></div>
+      <p>Verifying your payment, please wait…</p>
+    </div>
+
+    <!-- Success state -->
+    <div id="success-state" style="display:none">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h1>Payment Confirmed!</h1>
+      <p>Welcome to ZTO. Your <strong id="plan-name" style="color:var(--white)"></strong> plan is now active.</p>
+      <p>Check your inbox — we've sent you a receipt and your onboarding guide.</p>
+      <div class="ref-box">Reference: <span id="ref-display"></span></div>
+      <div>
+        <a href="portal.html" class="btn btn-gold">Go to My Dashboard</a>
+        <a href="index.html" class="btn btn-ghost">Back to Website</a>
+      </div>
+    </div>
+
+    <!-- Error / not verified state -->
+    <div id="error-state" style="display:none">
+      <div class="icon-wrap error-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h1 id="error-title">Verification Pending</h1>
+      <p id="error-msg">We couldn't verify your payment automatically. If money was deducted, don't worry — it will be confirmed within a few minutes.</p>
+      <div class="ref-box" id="error-ref-box" style="display:none">Reference: <span id="error-ref"></span></div>
+      <div>
+        <a href="portal.html" class="btn btn-gold">Check My Dashboard</a>
+        <a href="index.html" class="btn btn-ghost">Back to Website</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const API = 'http://localhost:4000/api';
+
+    const params    = new URLSearchParams(globalThis.location.search);
+    const reference = params.get('reference') || params.get('trxref');
+
+    function show(id) {
+      ['loading-state', 'success-state', 'error-state'].forEach(s => {
+        document.getElementById(s).style.display = s === id ? 'block' : 'none';
+      });
+    }
+
+    if (!reference) {
+      document.getElementById('error-title').textContent = 'No Payment Reference';
+      document.getElementById('error-msg').textContent   = 'We could not find a payment reference. Please contact support if you were charged.';
+      show('error-state');
+    } else {
+      show('loading-state');
+      verifyPayment(reference);
+    }
+
+    async function verifyPayment(ref) {
+      try {
+        const res  = await fetch(`${API}/payments/verify/${encodeURIComponent(ref)}`, {
+          credentials: 'include',
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          document.getElementById('plan-name').textContent = data.plan || 'selected';
+          document.getElementById('ref-display').textContent = ref;
+          show('success-state');
+        } else {
+          document.getElementById('error-ref-box').style.display = 'block';
+          document.getElementById('error-ref').textContent = ref;
+          show('error-state');
+        }
+      } catch {
+        document.getElementById('error-msg').textContent = 'Network error during verification. Your payment may still be processing — please check your dashboard.';
+        show('error-state');
+      }
+    }
+  </script>
+</body>
+</html>

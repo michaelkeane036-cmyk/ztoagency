@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — ZTO Marketing Agency</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A0F1E; --dark: #0F172A; --card: #111827;
+      --gold: #FBBF24; --teal: #0F766E; --white: #F8FAFC;
+      --text: #F1F5F9; --muted: #CBD5E1; --border: rgba(255,255,255,0.12);
+      --ff-head: 'Bricolage Grotesque', system-ui, sans-serif;
+      --ff-body: 'DM Sans', system-ui, sans-serif;
+    }
+    body {
+      font-family: var(--ff-body); background: var(--navy);
+      color: var(--text); min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 40px; width: 100%; max-width: 440px;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+    }
+    .logo {
+      font-family: var(--ff-head); font-size: 1.8rem; font-weight: 800;
+      color: var(--white); text-decoration: none; display: block; margin-bottom: 28px;
+    }
+    .logo .z { color: var(--gold); }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .tab-btn {
+      flex: 1; background: none; border: none; color: var(--muted);
+      font-family: var(--ff-head); font-size: 0.95rem; font-weight: 700;
+      padding: 10px 0; cursor: pointer; position: relative;
+      transition: color 0.2s;
+    }
+    .tab-btn.active { color: var(--white); }
+    .tab-btn.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 2px; background: var(--gold);
+    }
+
+    /* ── Forms ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .form-title {
+      font-family: var(--ff-head); font-size: 1.4rem; font-weight: 700; margin-bottom: 4px;
+    }
+    .form-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
+
+    label {
+      display: block; font-size: 0.83rem; font-weight: 500;
+      margin-bottom: 5px; color: var(--muted);
+    }
+    input {
+      width: 100%; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); font-family: var(--ff-body); font-size: 0.95rem;
+      padding: 11px 14px; margin-bottom: 16px; outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--gold); }
+    input.input-error { border-color: #f87171; }
+    .field-error { color: #f87171; font-size: 0.78rem; margin-top: -12px; margin-bottom: 12px; display: none; }
+
+    .alert {
+      border-radius: 8px; padding: 12px 14px;
+      font-size: 0.875rem; margin-bottom: 18px; display: none;
+    }
+    .alert-error   { background: #1e0d0d; border: 1px solid rgba(248,113,113,0.35); color: #f87171; }
+    .alert-success { background: #091a19; border: 1px solid rgba(15,118,110,0.40); color: #14b8a6; }
+
+    .btn {
+      width: 100%; padding: 13px; border: none; border-radius: 8px;
+      background: var(--gold); color: #0A0F1E;
+      font-family: var(--ff-head); font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s; margin-top: 4px;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .forgot { text-align: right; margin-top: -10px; margin-bottom: 16px; }
+    .forgot a { color: var(--gold); font-size: 0.8rem; text-decoration: none; }
+    .forgot a:hover { text-decoration: underline; }
+
+    .pw-hint {
+      font-size: 0.78rem; color: var(--muted); margin-top: -12px;
+      margin-bottom: 16px; line-height: 1.5;
+    }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+    .back-link {
+      display: block; text-align: center;
+      color: var(--muted); font-size: 0.84rem; text-decoration: none;
+    }
+    .back-link:hover { color: var(--white); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="logo"><span class="z">Z</span>TO</a>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="panel-login"  id="tab-login">Sign In</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-signup" id="tab-signup">Create Account</button>
+    </div>
+
+    <!-- ── LOGIN PANEL ── -->
+    <div class="tab-panel active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+      <h1 class="form-title">Welcome back</h1>
+      <p class="form-sub">Sign in to your client portal</p>
+
+      <div class="alert alert-error" id="login-error" role="alert"></div>
+
+      <form id="login-form" novalidate>
+        <label for="login-email">Email address</label>
+        <input type="email" id="login-email" placeholder="you@company.com" autocomplete="email" required />
+
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required />
+        <div class="forgot"><button type="button" id="forgot-link" style="background:none;border:none;color:var(--gold);font-size:0.8rem;cursor:pointer;padding:0;">Forgot password?</button></div>
+
+        <button type="submit" class="btn" id="login-btn">Sign In</button>
+      </form>
+    </div>
+
+    <!-- ── SIGNUP PANEL ── -->
+    <div class="tab-panel" id="panel-signup" role="tabpanel" aria-labelledby="tab-signup">
+      <h1 class="form-title">Create your account</h1>
+      <p class="form-sub">Get started — it's free to join. A plan can be added later.</p>
+
+      <div class="alert alert-error"   id="signup-error"   role="alert"></div>
+      <div class="alert alert-success" id="signup-success" role="alert"></div>
+
+      <form id="signup-form" novalidate>
+        <label for="signup-name">Full name</label>
+        <input type="text" id="signup-name" placeholder="Adaeze Nwosu" autocomplete="name" required />
+        <p class="field-error" id="err-name"></p>
+
+        <label for="signup-email">Email address</label>
+        <input type="email" id="signup-email" placeholder="you@company.com" autocomplete="email" required />
+        <p class="field-error" id="err-email"></p>
+
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" placeholder="••••••••" autocomplete="new-password" required />
+        <p class="pw-hint">Min 8 characters · one uppercase letter · one number</p>
+        <p class="field-error" id="err-password"></p>
+
+        <label for="signup-confirm">Confirm password</label>
+        <input type="password" id="signup-confirm" placeholder="••••••••" autocomplete="new-password" required />
+        <p class="field-error" id="err-confirm"></p>
+
+        <button type="submit" class="btn" id="signup-btn">Create Account</button>
+      </form>
+    </div>
+
+    <hr />
+    <a href="index.html" class="back-link">← Back to ZTO website</a>
+  </div>
+
+  <script type="module">
+    const API_BASE = 'http://localhost:4000/api';
+
+    function redirectUser(role) {
+      globalThis.location.href = role === 'admin' ? 'admin.html' : 'portal.html';
+    }
+
+    /* ── Redirect if already logged in ── */
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+      if (res.ok) {
+        const { user } = await res.json();
+        redirectUser(user.role);
+      }
+    } catch { /* not logged in */ }
+
+    /* ── Tab switching ── */
+    const tabBtns   = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        tabPanels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+      });
+    });
+
+    /* ── LOGIN ── */
+    const loginForm  = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const loginBtn   = document.getElementById('login-btn');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.style.display = 'none';
+
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (!email || !password) { showAlert(loginError, 'Please enter your email and password.'); return; }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in…';
+
+      try {
+        const res  = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+        redirectUser(data.user.role);
+      } catch (err) {
+        showAlert(loginError, err.message);
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }
+    });
+
+    /* ── SIGNUP ── */
+    const signupForm    = document.getElementById('signup-form');
+    const signupError   = document.getElementById('signup-error');
+    const signupSuccess = document.getElementById('signup-success');
+    const signupBtn     = document.getElementById('signup-btn');
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      signupError.style.display   = 'none';
+      signupSuccess.style.display = 'none';
+      clearFieldErrors();
+
+      const full_name       = document.getElementById('signup-name').value.trim();
+      const email           = document.getElementById('signup-email').value.trim();
+      const password        = document.getElementById('signup-password').value;
+      const confirm_password = document.getElementById('signup-confirm').value;
+
+      signupBtn.disabled = true;
+      signupBtn.textContent = 'Creating account…';
+
+      try {
+        const res  = await fetch(`${API_BASE}/auth/signup`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_name, email, password, confirm_password }),
+        });
+        const data = await res.json();
+
+        if (res.status === 422 && data.errors) {
+          data.errors.forEach(err => showFieldError(err.path, err.msg));
+          signupBtn.disabled = false;
+          signupBtn.textContent = 'Create Account';
+          return;
+        }
+        if (!res.ok) throw new Error(data.error || 'Signup failed');
+
+        if (res.status === 201 && data.user) {
+          // Logged in immediately — redirect to portal
+          redirectUser(data.user.role);
+        } else {
+          // Anti-enumeration response (email already existed)
+          showAlert(signupSuccess, data.message || 'Account created! Check your inbox.');
+          signupBtn.disabled = false;
+          signupBtn.textContent = 'Create Account';
+        }
+      } catch (err) {
+        showAlert(signupError, err.message);
+        signupBtn.disabled = false;
+        signupBtn.textContent = 'Create Account';
+      }
+    });
+
+    /* ── Helpers ── */
+    function showAlert(el, msg) {
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    const fieldErrorMap = { full_name: 'err-name', email: 'err-email', password: 'err-password', confirm_password: 'err-confirm' };
+    function showFieldError(field, msg) {
+      const el = document.getElementById(fieldErrorMap[field]);
+      if (el) { el.textContent = msg; el.style.display = 'block'; }
+    }
+    function clearFieldErrors() {
+      Object.values(fieldErrorMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = ''; el.style.display = 'none'; }
+      });
+    }
+
+    document.getElementById('forgot-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAlert(loginError, 'To reset your password, contact us at hello@ztomarketing.com');
+    });
+  </script>
+</body>
+</html>

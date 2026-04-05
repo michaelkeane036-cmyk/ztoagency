@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — ZTO Marketing Agency</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A0F1E; --card: #111827; --gold: #FBBF24; --teal: #0F766E;
+      --white: #F8FAFC; --text: #F1F5F9; --muted: #CBD5E1; --border: rgba(255,255,255,0.12);
+      --ff-head: 'Bricolage Grotesque', system-ui, sans-serif;
+      --ff-body: 'DM Sans', system-ui, sans-serif;
+    }
+    body {
+      font-family: var(--ff-body); background: var(--navy); color: var(--text);
+      min-height: 100vh; padding: 24px;
+    }
+    .page-wrap {
+      max-width: 980px; margin: 0 auto; padding: 32px 0 64px;
+    }
+    .logo {
+      font-family: var(--ff-head); font-size: 1.6rem; font-weight: 800;
+      color: var(--white); text-decoration: none; display: inline-block; margin-bottom: 40px;
+    }
+    .logo .z { color: var(--gold); }
+    h1 {
+      font-family: var(--ff-head); font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800; margin-bottom: 8px;
+    }
+    .sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 40px; }
+
+    .checkout-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 28px; align-items: start;
+    }
+    @media (min-width: 720px) {
+      .checkout-grid { grid-template-columns: 1fr 420px; }
+    }
+
+    /* ── Plan summary card ── */
+    .plan-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px;
+    }
+    .plan-badge {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal); background: rgba(15,118,110,0.12); border: 1px solid rgba(15,118,110,0.3);
+      padding: 4px 12px; border-radius: 100px; display: inline-block; margin-bottom: 16px;
+    }
+    .plan-name {
+      font-family: var(--ff-head); font-size: 1.8rem; font-weight: 800; margin-bottom: 6px;
+    }
+    .plan-price {
+      font-family: var(--ff-head); font-size: 2.4rem; font-weight: 800;
+      color: var(--gold); margin-bottom: 4px;
+    }
+    .plan-price .per { font-size: 1rem; color: var(--muted); font-weight: 500; }
+    .plan-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; line-height: 1.6; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .feature-list li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.88rem; color: var(--muted);
+    }
+    .feature-list li .check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(15,118,110,0.2); color: #2dd4bf;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .secure-note {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; color: var(--muted); margin-top: 24px;
+    }
+    .secure-note svg { width: 16px; height: 16px; color: #2dd4bf; flex-shrink: 0; }
+
+    /* ── Payment form card ── */
+    .pay-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px;
+    }
+    .pay-card h2 {
+      font-family: var(--ff-head); font-size: 1.2rem; font-weight: 700; margin-bottom: 24px;
+    }
+    label {
+      display: block; font-size: 0.83rem; font-weight: 500;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    input {
+      width: 100%; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border); border-radius: 10px;
+      color: var(--text); font-family: var(--ff-body); font-size: 0.95rem;
+      padding: 12px 14px; margin-bottom: 18px; outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--gold); }
+    input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .field-note { font-size: 0.78rem; color: var(--muted); margin-top: -14px; margin-bottom: 14px; }
+
+    .divider-or {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--muted); font-size: 0.8rem; margin: 20px 0;
+    }
+    .divider-or::before, .divider-or::after {
+      content: ''; flex: 1; border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      width: 100%; padding: 15px; border: none; border-radius: 10px;
+      font-family: var(--ff-head); font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-pay { background: var(--gold); color: #0A0F1E; }
+    .btn-login { background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid var(--border); }
+
+    .alert {
+      border-radius: 10px; padding: 13px 16px; font-size: 0.875rem;
+      margin-bottom: 18px; display: none;
+    }
+    .alert-error { background: #1e0d0d; border: 1px solid rgba(248,113,113,0.35); color: #f87171; }
+    .alert-info  { background: #0a1a1f; border: 1px solid rgba(15,118,110,0.35); color: #2dd4bf; }
+
+    .logged-in-strip {
+      background: rgba(15,118,110,0.1); border: 1px solid rgba(15,118,110,0.25);
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+      font-size: 0.88rem; color: #2dd4bf; display: none;
+    }
+    .logged-in-strip strong { color: var(--text); }
+
+    .back-link {
+      display: inline-block; color: var(--muted); font-size: 0.84rem;
+      text-decoration: none; margin-top: 28px;
+    }
+    .back-link:hover { color: var(--white); }
+    #guest-section { display: none; }
+    #pw-hint { font-size: 0.78rem; color: var(--muted); margin-top: -14px; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <a href="index.html" class="logo"><span class="z">Z</span>TO</a>
+
+    <h1>Complete Your Order</h1>
+    <p class="sub" id="page-sub">Secure payment via Paystack. Cancel anytime.</p>
+
+    <div class="alert alert-error" id="main-error" role="alert"></div>
+
+    <div class="checkout-grid">
+
+      <!-- ── Plan summary ── -->
+      <div class="plan-card" id="plan-card">
+        <span class="plan-badge" id="plan-tier">Growth</span>
+        <div class="plan-name" id="plan-name">Accelerate</div>
+        <div class="plan-price" id="plan-price">₦600,000<span class="per">/mo</span></div>
+        <p class="plan-desc" id="plan-desc">Full-funnel growth system. Ads, content, SEO and nurture working together for compound growth.</p>
+        <hr />
+        <ul class="feature-list" id="plan-features"></ul>
+        <div class="secure-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Secured by Paystack · 256-bit SSL encryption
+        </div>
+      </div>
+
+      <!-- ── Payment form ── -->
+      <div class="pay-card">
+        <h2>Your Details</h2>
+
+        <!-- Shows when already logged in -->
+        <div class="logged-in-strip" id="logged-in-strip">
+          Paying as <strong id="logged-in-email"></strong> —
+          <a href="#" id="switch-account" style="color:var(--gold);text-decoration:none;">switch account</a>
+        </div>
+
+        <div class="alert alert-error" id="form-error" role="alert"></div>
+        <div class="alert alert-info"  id="form-info"  role="alert"></div>
+
+        <!-- Guest: collect name + email (+ create account) -->
+        <div id="guest-section">
+          <label for="full-name">Full name</label>
+          <input type="text" id="full-name" placeholder="Adaeze Nwosu" autocomplete="name" />
+
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="you@company.com" autocomplete="email" />
+
+          <label for="pwd">Create a password</label>
+          <input type="password" id="pwd" placeholder="Min 8 chars, one uppercase, one number" autocomplete="new-password" />
+          <p id="pw-hint">We'll create your client portal account automatically.</p>
+        </div>
+
+        <button class="btn btn-pay" id="pay-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+          Pay Securely with Paystack
+        </button>
+
+        <div class="divider-or" id="login-divider">or</div>
+
+        <button class="btn btn-login" id="login-btn" style="display:none">
+          Already have an account? Sign in
+        </button>
+
+        <a href="index.html" class="back-link">← Back to ZTO website</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const API = 'http://localhost:4000/api';
+
+    /* ── Plan data ──────────────────────────────────────────── */
+    const PLANS = {
+      ignite: {
+        tier: 'Starter', name: 'Ignite', price: '₦250,000', amount: 250000,
+        desc: 'Perfect for businesses ready to move from guessing to growing. One core channel, fully managed.',
+        features: [
+          '1 ad channel (Meta or Google)',
+          'Monthly performance report',
+          'Ad creative & copy included',
+          'Audience research & targeting',
+          '₦500K/month max ad spend managed',
+        ],
+      },
+      accelerate: {
+        tier: 'Growth', name: 'Accelerate', price: '₦600,000', amount: 600000,
+        desc: 'Full-funnel growth system. Ads, content, SEO and nurture working together for compound growth.',
+        features: [
+          'Up to 3 ad channels',
+          'SEO & content marketing included',
+          'Bi-weekly strategy calls',
+          'Dedicated account manager',
+          'Conversion rate optimisation',
+          'Bi-weekly performance reports',
+        ],
+      },
+    };
+
+    /* ── Read plan from URL ─────────────────────────────────── */
+    const params  = new URLSearchParams(globalThis.location.search);
+    const planKey = (params.get('plan') || 'accelerate').toLowerCase();
+    const plan    = PLANS[planKey];
+
+    if (!plan) {
+      document.getElementById('main-error').textContent = 'Invalid plan selected. Please go back and choose a plan.';
+      document.getElementById('main-error').style.display = 'block';
+      document.getElementById('checkout-grid')?.remove();
+    } else {
+      // Populate plan card
+      document.getElementById('plan-tier').textContent  = plan.tier;
+      document.getElementById('plan-name').textContent  = plan.name;
+      document.getElementById('plan-price').innerHTML   = `${plan.price}<span class="per">/mo</span>`;
+      document.getElementById('plan-desc').textContent  = plan.desc;
+      document.title = `Checkout — ${plan.name} Plan · ZTO Marketing Agency`;
+
+      const featureList = document.getElementById('plan-features');
+      plan.features.forEach(f => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>${f}`;
+        featureList.appendChild(li);
+      });
+    }
+
+    /* ── Auth check ─────────────────────────────────────────── */
+    let currentUser = null;
+
+    async function checkAuth() {
+      try {
+        const res = await fetch(`${API}/auth/me`, { credentials: 'include' });
+        if (res.ok) {
+          const { user } = await res.json();
+          currentUser = user;
+          showLoggedInState(user);
+        } else {
+          showGuestState();
+        }
+      } catch {
+        showGuestState();
+      }
+    }
+
+    function showLoggedInState(user) {
+      document.getElementById('logged-in-strip').style.display = 'block';
+      document.getElementById('logged-in-email').textContent   = user.email;
+      document.getElementById('guest-section').style.display   = 'none';
+      document.getElementById('login-divider').style.display   = 'none';
+      document.getElementById('login-btn').style.display       = 'none';
+    }
+
+    function showGuestState() {
+      document.getElementById('guest-section').style.display = 'block';
+      document.getElementById('login-btn').style.display     = 'block';
+    }
+
+    document.getElementById('switch-account')?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' });
+      currentUser = null;
+      document.getElementById('logged-in-strip').style.display = 'none';
+      showGuestState();
+    });
+
+    document.getElementById('login-btn')?.addEventListener('click', () => {
+      globalThis.location.href = `login.html?next=checkout.html?plan=${planKey}`;
+    });
+
+    /* ── Payment flow ───────────────────────────────────────── */
+    document.getElementById('pay-btn').addEventListener('click', async () => {
+      clearMessages();
+
+      if (currentUser) {
+        await initializePayment();
+      } else {
+        await signupAndPay();
+      }
+    });
+
+    async function signupAndPay() {
+      const fullName = document.getElementById('full-name').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('pwd').value;
+
+      if (!fullName || !email || !password) {
+        return showError('form-error', 'Please fill in all fields.');
+      }
+
+      setLoading(true);
+
+      // Step 1: Create account
+      const signupRes = await fetch(`${API}/auth/signup`, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name: fullName, email, password, confirm_password: password }),
+      });
+      const signupData = await signupRes.json();
+
+      if (!signupRes.ok) {
+        const msg = signupData.errors?.[0]?.msg || signupData.error || 'Account creation failed.';
+        setLoading(false);
+        return showError('form-error', msg);
+      }
+
+      currentUser = signupData.user;
+      showInfo('form-info', 'Account created! Redirecting to payment…');
+
+      await initializePayment();
+    }
+
+    async function initializePayment() {
+      setLoading(true);
+
+      const res = await fetch(`${API}/payments/initialize`, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_id: planKey }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoading(false);
+        return showError('form-error', data.error || 'Payment initialization failed. Please try again.');
+      }
+
+      // Redirect to Paystack hosted checkout
+      globalThis.location.href = data.authorization_url;
+    }
+
+    /* ── Helpers ── */
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg; el.style.display = 'block';
+    }
+    function showInfo(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg; el.style.display = 'block';
+    }
+    function clearMessages() {
+      ['main-error', 'form-error', 'form-info'].forEach(id => {
+        const el = document.getElementById(id);
+        el.textContent = ''; el.style.display = 'none';
+      });
+    }
+    function setLoading(on) {
+      const btn = document.getElementById('pay-btn');
+      btn.disabled    = on;
+      btn.textContent = on ? 'Please wait…' : 'Pay Securely with Paystack';
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>

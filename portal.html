@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal — ZTO Marketing Agency</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A0F1E; --dark: #0F172A; --card: #111827;
+      --gold: #FBBF24; --white: #F8FAFC;
+      --text: #F1F5F9; --muted: #94A3B8; --border: rgba(255,255,255,0.10);
+      --green: #34d399; --red: #f87171; --blue: #60a5fa;
+      --ff-head: 'Bricolage Grotesque', system-ui, sans-serif;
+      --ff-body: 'DM Sans', system-ui, sans-serif;
+    }
+    body { font-family: var(--ff-body); background: var(--navy); color: var(--text); min-height: 100vh; }
+    #portal-root { min-height: 100vh; }
+
+    .portal-layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 240px; background: var(--dark); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; padding: 24px 0; flex-shrink: 0;
+      position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto;
+    }
+    .sidebar-logo {
+      font-family: var(--ff-head); font-size: 1.5rem; font-weight: 800;
+      padding: 0 24px 24px; border-bottom: 1px solid var(--border);
+      margin-bottom: 16px; color: var(--white);
+    }
+    .sidebar-logo .z { color: var(--gold); }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: var(--muted); cursor: pointer;
+      font-size: 0.9rem; font-weight: 500; border: none; background: none;
+      width: 100%; text-align: left; transition: color 0.2s, background 0.2s;
+    }
+    .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+    .nav-item.active { color: var(--gold); background: rgba(251,191,36,0.08); }
+    .sidebar-footer { margin-top: auto; padding: 16px 24px; border-top: 1px solid var(--border); }
+    .user-pill { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
+    .user-pill strong { color: var(--text); display: block; }
+    .logout-btn {
+      background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3);
+      color: #f87171; padding: 8px 16px; border-radius: 6px; cursor: pointer;
+      font-size: 0.82rem; font-family: var(--ff-body); width: 100%; transition: background 0.2s;
+    }
+    .logout-btn:hover { background: rgba(248,113,113,0.2); }
+
+    .portal-main { margin-left: 240px; flex: 1; padding: 40px 36px; }
+    .page-title { font-family: var(--ff-head); font-size: 1.6rem; font-weight: 700; margin-bottom: 28px; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .stat-value { font-family: var(--ff-head); font-size: 1.8rem; font-weight: 700; }
+    .stat-value.gold { color: var(--gold); }
+    .stat-value.green { color: var(--green); }
+
+    .section-head { font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .empty { color: var(--muted); font-size: 0.9rem; padding: 8px 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { text-align: left; color: var(--muted); font-weight: 500; font-size: 0.75rem;
+         text-transform: uppercase; letter-spacing: 0.08em; padding: 0 12px 12px 0;
+         border-bottom: 1px solid var(--border); }
+    td { padding: 12px 12px 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 600; text-transform: capitalize; }
+    .badge-green  { background: rgba(52,211,153,0.12);  color: var(--green); }
+    .badge-yellow { background: rgba(251,191,36,0.12);  color: var(--gold);  }
+    .badge-red    { background: rgba(248,113,113,0.12); color: var(--red);   }
+    .badge-blue   { background: rgba(96,165,250,0.12);  color: var(--blue);  }
+
+    .msg-thread { display: flex; flex-direction: column; gap: 12px; max-height: 360px; overflow-y: auto; padding: 4px 0 16px; }
+    .msg-bubble { max-width: 70%; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.5; }
+    .msg-bubble.mine   { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.2); align-self: flex-end; }
+    .msg-bubble.theirs { background: rgba(255,255,255,0.06); border: 1px solid var(--border); align-self: flex-start; }
+    .msg-meta { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+    .msg-input-row { display: flex; gap: 10px; margin-top: 16px; }
+    .msg-input {
+      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: var(--ff-body);
+      font-size: 0.9rem; padding: 10px 14px; outline: none;
+    }
+    .msg-input:focus { border-color: var(--gold); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold); color: #0A0F1E; border: none;
+      border-radius: 8px; padding: 12px 20px; font-weight: 700;
+      font-family: var(--ff-head); cursor: pointer; font-size: 0.9rem;
+      margin-right: 10px; margin-bottom: 8px; transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 20px; font-weight: 600;
+      font-family: var(--ff-body); cursor: pointer; font-size: 0.9rem;
+      margin-bottom: 8px; text-decoration: none; transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--white); }
+
+    .loader { color: var(--muted); text-align: center; padding: 80px 20px; font-size: 1rem; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .portal-main { margin-left: 0; padding: 24px 16px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="portal-root"><div class="loader">Loading your portal…</div></div>
+
+  <script type="text/babel">
+    const API = 'http://localhost:4000/api';
+
+    const fmt     = n => '₦' + Number(n).toLocaleString('en-NG');
+    const fmtDate = s => s ? new Date(s).toLocaleDateString('en-NG', { day:'numeric', month:'short', year:'numeric' }) : '—';
+
+    function Badge({ text }) {
+      const map = { active:'badge-green', paused:'badge-yellow', completed:'badge-blue',
+                    success:'badge-green', pending:'badge-yellow', failed:'badge-red' };
+      return <span className={`badge ${map[text] || 'badge-blue'}`}>{text}</span>;
+    }
+
+    /* ── Sidebar ── */
+    function Sidebar({ user, active, onNav, onLogout }) {
+      const items = [
+        { key:'dashboard', label:'Dashboard', icon:'📊' },
+        { key:'campaigns', label:'Campaigns', icon:'📣' },
+        { key:'reports',   label:'Reports',   icon:'📄' },
+        { key:'payments',  label:'Payments',  icon:'💳' },
+        { key:'messages',  label:'Messages',  icon:'💬' },
+        { key:'settings',  label:'Settings',  icon:'⚙️' },
+      ];
+      return (
+        <aside className="sidebar">
+          <div className="sidebar-logo"><span className="z">Z</span>TO Portal</div>
+          {items.map(i => (
+            <button key={i.key} className={`nav-item ${active === i.key ? 'active' : ''}`}
+              onClick={() => onNav(i.key)}>
+              <span>{i.icon}</span>{i.label}
+            </button>
+          ))}
+          <div className="sidebar-footer">
+            <div className="user-pill">
+              <strong>{user?.full_name}</strong>
+              {user?.plan && <span>Plan: {user.plan}</span>}
+            </div>
+            <button className="logout-btn" onClick={onLogout}>Sign out</button>
+          </div>
+        </aside>
+      );
+    }
+
+    /* ── Dashboard ── */
+    function DashboardPage({ data }) {
+      const totalRevenue = data.campaigns.reduce((s, c) => s + Number(c.revenue || 0), 0);
+      const totalSpend   = data.campaigns.reduce((s, c) => s + Number(c.spend   || 0), 0);
+      const avgRoas      = totalSpend > 0 ? (totalRevenue / totalSpend).toFixed(2) : '—';
+      return (
+        <>
+          <h1 className="page-title">Dashboard</h1>
+          <div className="stat-grid">
+            <div className="stat-card">
+              <div className="stat-label">Active Campaigns</div>
+              <div className="stat-value gold">{data.campaigns.filter(c => c.status === 'active').length}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Total Revenue Tracked</div>
+              <div className="stat-value green">{fmt(totalRevenue)}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Total Ad Spend</div>
+              <div className="stat-value">{fmt(totalSpend)}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Average ROAS</div>
+              <div className="stat-value gold">{avgRoas}×</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Reports Available</div>
+              <div className="stat-value">{data.reports.length}</div>
+            </div>
+          </div>
+          <div className="card">
+            <div className="section-head">Recent Reports</div>
+            {data.reports.length === 0
+              ? <p className="empty">No reports yet — your account manager will upload your first one soon.</p>
+              : <table>
+                  <thead><tr><th>Title</th><th>Date</th><th>Link</th></tr></thead>
+                  <tbody>{data.reports.map(r => (
+                    <tr key={r.id}>
+                      <td>{r.title}</td>
+                      <td>{fmtDate(r.created_at)}</td>
+                      <td>{r.file_url
+                        ? <a href={r.file_url} target="_blank" rel="noopener" style={{color:'#FBBF24'}}>View →</a>
+                        : '—'}
+                      </td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+            }
+          </div>
+        </>
+      );
+    }
+
+    /* ── Campaigns ── */
+    function CampaignsPage({ campaigns }) {
+      return (
+        <>
+          <h1 className="page-title">Campaigns</h1>
+          <div className="card">
+            {campaigns.length === 0
+              ? <p className="empty">No campaigns yet. Your account manager will set these up after onboarding.</p>
+              : <table>
+                  <thead><tr><th>Name</th><th>Channel</th><th>Status</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Start</th></tr></thead>
+                  <tbody>{campaigns.map(c => (
+                    <tr key={c.id}>
+                      <td style={{fontWeight:600}}>{c.name}</td>
+                      <td>{c.channel}</td>
+                      <td><Badge text={c.status} /></td>
+                      <td>{fmt(c.spend)}</td>
+                      <td style={{color:'#34d399'}}>{fmt(c.revenue)}</td>
+                      <td style={{color:'#FBBF24',fontWeight:600}}>{Number(c.roas).toFixed(2)}×</td>
+                      <td>{fmtDate(c.start_date)}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+            }
+          </div>
+        </>
+      );
+    }
+
+    /* ── Reports ── */
+    function ReportsPage({ reports }) {
+      return (
+        <>
+          <h1 className="page-title">Reports</h1>
+          <div className="card">
+            {reports.length === 0
+              ? <p className="empty">No reports uploaded yet.</p>
+              : <table>
+                  <thead><tr><th>Title</th><th>Date</th><th>Download</th></tr></thead>
+                  <tbody>{reports.map(r => (
+                    <tr key={r.id}>
+                      <td>{r.title}</td>
+                      <td>{fmtDate(r.created_at)}</td>
+                      <td>{r.file_url
+                        ? <a href={r.file_url} target="_blank" rel="noopener" style={{color:'#FBBF24'}}>Open →</a>
+                        : '—'}
+                      </td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+            }
+          </div>
+        </>
+      );
+    }
+
+    /* ── Payments ── */
+    function PaymentsPage({ payments, user }) {
+      const [loading, setLoading] = React.useState(false);
+      const [errMsg,  setErrMsg]  = React.useState('');
+
+      async function startPayment(planId) {
+        setLoading(true); setErrMsg('');
+        try {
+          const res  = await fetch(`${API}/payments/initialize`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan_id: planId }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error);
+          window.location.href = data.authorization_url;
+        } catch (e) { setErrMsg(e.message); setLoading(false); }
+      }
+
+      return (
+        <>
+          <h1 className="page-title">Payments</h1>
+          <div className="card">
+            <div className="section-head">Subscribe / Upgrade Plan</div>
+            <p style={{color:'var(--muted)',fontSize:'0.875rem',marginBottom:20}}>
+              Current plan: <strong style={{color:'var(--gold)'}}>{user?.plan || 'None'}</strong>
+            </p>
+            <button className="btn-primary" onClick={() => startPayment('ignite')} disabled={loading}>
+              Ignite — ₦250,000/mo
+            </button>
+            <button className="btn-primary" onClick={() => startPayment('accelerate')} disabled={loading}>
+              Accelerate — ₦600,000/mo
+            </button>
+            <a href="index.html#contact" className="btn-outline">Dominate — Custom scope →</a>
+            {errMsg && <p style={{color:'#f87171',marginTop:12,fontSize:'0.875rem'}}>{errMsg}</p>}
+          </div>
+          <div className="card">
+            <div className="section-head">Payment History</div>
+            {payments.length === 0
+              ? <p className="empty">No payments on record yet.</p>
+              : <table>
+                  <thead><tr><th>Plan</th><th>Amount</th><th>Status</th><th>Date</th><th>Reference</th></tr></thead>
+                  <tbody>{payments.map(p => (
+                    <tr key={p.id}>
+                      <td style={{textTransform:'capitalize'}}>{p.plan}</td>
+                      <td>{fmt(p.amount / 100)}</td>
+                      <td><Badge text={p.status} /></td>
+                      <td>{fmtDate(p.created_at)}</td>
+                      <td style={{fontFamily:'monospace',fontSize:'0.78rem',color:'var(--muted)'}}>{p.reference}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+            }
+          </div>
+        </>
+      );
+    }
+
+    /* ── Messages ── */
+    function MessagesPage({ userId }) {
+      const [messages, setMessages] = React.useState([]);
+      const [input,    setInput]    = React.useState('');
+      const [sending,  setSending]  = React.useState(false);
+      const bottomRef = React.useRef(null);
+
+      React.useEffect(() => {
+        fetch(`${API}/clients/messages`, { credentials: 'include' })
+          .then(r => r.json()).then(d => setMessages(d.messages || []));
+      }, []);
+
+      React.useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, [messages]);
+
+      async function send() {
+        if (!input.trim() || sending) return;
+        setSending(true);
+        const res  = await fetch(`${API}/clients/messages`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: input.trim() }),
+        });
+        const data = await res.json();
+        if (res.ok) { setMessages(prev => [...prev, data.message]); setInput(''); }
+        setSending(false);
+      }
+
+      return (
+        <>
+          <h1 className="page-title">Messages</h1>
+          <div className="card">
+            <div className="msg-thread">
+              {messages.length === 0 && <p className="empty">No messages yet. Send one below to start the conversation.</p>}
+              {messages.map(m => {
+                const mine = m.sender?.role === 'client';
+                return (
+                  <div key={m.id} className={`msg-bubble ${mine ? 'mine' : 'theirs'}`}>
+                    <div>{m.content}</div>
+                    <div className="msg-meta">{m.sender?.full_name} · {fmtDate(m.created_at)}</div>
+                  </div>
+                );
+              })}
+              <div ref={bottomRef} />
+            </div>
+            <div className="msg-input-row">
+              <input className="msg-input" value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && send()}
+                placeholder="Type a message…" />
+              <button className="btn-primary" style={{margin:0}} onClick={send} disabled={sending}>Send</button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    /* ── Settings ── */
+    function SettingsPage() {
+      const [curr, setCurr] = React.useState('');
+      const [nw,   setNw]   = React.useState('');
+      const [ok,   setOk]   = React.useState('');
+      const [err,  setErr]  = React.useState('');
+
+      const inputStyle = {
+        background:'rgba(255,255,255,0.05)', border:'1px solid var(--border)',
+        borderRadius:8, color:'var(--text)', padding:'11px 14px',
+        fontFamily:'var(--ff-body)', fontSize:'0.9rem', outline:'none', width:'100%',
+      };
+
+      async function changePass(e) {
+        e.preventDefault(); setOk(''); setErr('');
+        const res  = await fetch(`${API}/auth/change-password`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ current_password: curr, new_password: nw }),
+        });
+        const data = await res.json();
+        if (res.ok) { setOk('Password updated successfully.'); setCurr(''); setNw(''); }
+        else setErr(data.errors?.[0]?.msg || data.error);
+      }
+
+      return (
+        <>
+          <h1 className="page-title">Settings</h1>
+          <div className="card" style={{maxWidth:460}}>
+            <div className="section-head">Change Password</div>
+            <form onSubmit={changePass} style={{display:'flex',flexDirection:'column',gap:14}}>
+              <input type="password" value={curr} onChange={e=>setCurr(e.target.value)}
+                placeholder="Current password" style={inputStyle} />
+              <input type="password" value={nw} onChange={e=>setNw(e.target.value)}
+                placeholder="New password (8+ chars, 1 uppercase, 1 number)" style={inputStyle} />
+              {err && <p style={{color:'#f87171',fontSize:'0.82rem'}}>{err}</p>}
+              {ok  && <p style={{color:'#34d399',fontSize:'0.82rem'}}>{ok}</p>}
+              <button type="submit" className="btn-primary" style={{width:'fit-content'}}>Update Password</button>
+            </form>
+          </div>
+        </>
+      );
+    }
+
+    /* ── Root ── */
+    function PortalApp() {
+      const [user,   setUser]   = React.useState(null);
+      const [data,   setData]   = React.useState(null);
+      const [page,   setPage]   = React.useState('dashboard');
+      const [ready,  setReady]  = React.useState(false);
+
+      React.useEffect(() => {
+        (async () => {
+          try {
+            const r = await fetch(`${API}/auth/me`, { credentials: 'include' });
+            if (!r.ok) throw new Error();
+            const { user } = await r.json();
+            if (user.role === 'admin') { window.location.href = 'admin.html'; return; }
+            setUser(user);
+            const d = await fetch(`${API}/clients/dashboard`, { credentials: 'include' }).then(r => r.json());
+            setData(d);
+            setReady(true);
+          } catch { window.location.href = 'login.html'; }
+        })();
+      }, []);
+
+      async function logout() {
+        await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' });
+        window.location.href = 'login.html';
+      }
+
+      if (!ready || !data) return <div className="loader">Loading your portal…</div>;
+
+      const pages = {
+        dashboard: <DashboardPage data={data} />,
+        campaigns: <CampaignsPage campaigns={data.campaigns} />,
+        reports:   <ReportsPage   reports={data.reports} />,
+        payments:  <PaymentsPage  payments={data.payments} user={user} />,
+        messages:  <MessagesPage  userId={user.id} />,
+        settings:  <SettingsPage />,
+      };
+
+      return (
+        <div className="portal-layout">
+          <Sidebar user={user} active={page} onNav={setPage} onLogout={logout} />
+          <main className="portal-main">{pages[page] || pages.dashboard}</main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('portal-root')).render(<PortalApp />);
+  </script>
+</body>
+</html>
