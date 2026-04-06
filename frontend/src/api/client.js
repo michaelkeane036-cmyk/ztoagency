@@ -6,12 +6,10 @@
  *   so we never hardcode the backend URL.
  */
 
-// In development, Vite proxies /api → localhost:4000 so no absolute URL needed.
-// In production, VITE_API_URL must be set to your Railway backend URL (no trailing slash).
-// e.g. https://ztoagency-backend.up.railway.app
-const BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL}/api`
-  : '/api'
+// In development: Vite proxies /api → localhost:4000
+// In production: Vercel rewrites /api → Railway backend (see vercel.json)
+// Either way, always use a relative /api path — no hardcoded URLs needed.
+const BASE = '/api'
 
 async function request(method, path, body) {
   const opts = {
