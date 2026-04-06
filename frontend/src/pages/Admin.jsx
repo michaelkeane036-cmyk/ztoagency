@@ -459,7 +459,17 @@ export default function Admin() {
   return (
     <div className="admin-layout">
       <AdminSidebar admin={user} active={page} onNav={setPage} onLogout={handleLogout} />
-      <main className="admin-main">{pages[page] || pages.overview}</main>
+      <main className="admin-main">
+        {pages[page] || pages.overview}
+      </main>
+      <nav className="mobile-nav">
+        {NAV.map(n => (
+          <button key={n.key} className={`mobile-nav-item${page === n.key ? ' active' : ''}`} onClick={() => setPage(n.key)}>
+            <Icon id={n.icon} size={20} />
+            <span>{n.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   )
 }

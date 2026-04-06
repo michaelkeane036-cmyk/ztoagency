@@ -263,6 +263,19 @@ function SettingsPage() {
   )
 }
 
+function MobileNav({ nav, active, onNav }) {
+  return (
+    <nav className="mobile-nav">
+      {nav.map(n => (
+        <button key={n.key} className={`mobile-nav-item${active === n.key ? ' active' : ''}`} onClick={() => onNav(n.key)}>
+          <Icon id={n.icon} size={20} />
+          <span>{n.label}</span>
+        </button>
+      ))}
+    </nav>
+  )
+}
+
 export default function Portal() {
   const { user, logout } = useAuth()
   const [data,  setData]  = useState(null)
@@ -294,7 +307,10 @@ export default function Portal() {
   return (
     <div className="portal-layout">
       <Sidebar user={user} active={page} onNav={setPage} onLogout={handleLogout} />
-      <main className="portal-main">{pages[page] || pages.dashboard}</main>
+      <main className="portal-main">
+        {pages[page] || pages.dashboard}
+      </main>
+      <MobileNav nav={NAV} active={page} onNav={setPage} />
     </div>
   )
 }
