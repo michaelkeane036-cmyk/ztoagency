@@ -15,23 +15,11 @@ const app  = express();
 const PORT = process.env.PORT || 4000;
 
 /* ─── Security headers ─────────────────────────────── */
+// CSP only makes sense when serving HTML — this is a pure API server,
+// so disable CSP entirely and rely on CORS for access control.
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc:     ["'none'"],
-      scriptSrc:      ["'self'"],
-      styleSrc:       ["'self'", "'unsafe-inline'"],   // inline styles on portal/admin pages
-      fontSrc:        ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc:         ["'self'", 'data:'],
-      connectSrc:     ["'self'"],
-      frameSrc:       ["'none'"],
-      objectSrc:      ["'none'"],
-      baseUri:        ["'none'"],
-      formAction:     ["'self'"],
-      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
-    },
-  },
-  crossOriginEmbedderPolicy: false,   // allow Paystack redirect in portal iframes
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
 }));
 
