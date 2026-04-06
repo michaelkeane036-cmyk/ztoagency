@@ -50,13 +50,19 @@ const DEV_ORIGINS = new Set([
   'http://127.0.0.1:5173',
 ]);
 
+// Build allowed origins list — strip trailing slashes to avoid mismatch
+const PROD_ORIGINS = new Set(
+  (process.env.FRONTEND_URL || '')
+    .split(',')
+    .map(u => u.trim().replace(/\/$/, ''))
+    .filter(Boolean)
+);
+
 app.use(cors({
   origin: (origin, cb) => {
-    const prod = process.env.FRONTEND_URL;
     const isDev = process.env.NODE_ENV !== 'production';
-    // no origin = same-origin or file:// — allow in dev only
     if (!origin) return cb(null, isDev);
-    if (origin === prod) return cb(null, true);
+    if (PROD_ORIGINS.has(origin)) return cb(null, true);
     if (isDev && DEV_ORIGINS.has(origin)) return cb(null, true);
     cb(new Error(`CORS: origin '${origin}' not allowed`));
   },
