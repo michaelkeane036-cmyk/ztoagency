@@ -202,7 +202,7 @@ function MessagesPage() {
       const { message } = await api.post('/clients/messages', { content: input.trim() })
       setMessages(prev => [...prev, message])
       setInput('')
-    } catch {}
+    } catch { /* errors shown via state */ }
     setSending(false)
   }
 

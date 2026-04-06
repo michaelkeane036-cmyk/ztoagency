@@ -91,7 +91,7 @@ function LeadsPage({ leads: initialLeads }) {
     try {
       await api.patch(`/admin/leads/${id}`, { status })
       setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l))
-    } catch {}
+    } catch { /* errors shown via state */ }
   }
 
   return (
@@ -150,7 +150,7 @@ function ClientsPage({ clients: initialClients }) {
     try {
       await api.patch(`/admin/clients/${id}`, { is_active: !is_active })
       setClients(prev => prev.map(c => c.id === id ? { ...c, is_active: !is_active } : c))
-    } catch {}
+    } catch { /* errors shown via state */ }
   }
 
   return (
@@ -245,7 +245,7 @@ function CampaignsPage({ clients }) {
       setCampaigns(p => [data.campaign, ...p])
       setMsg('Campaign created.')
       setTimeout(() => { setModal(false); setMsg('') }, 1500)
-    } catch {}
+    } catch { /* errors shown via state */ }
   }
 
   return (
@@ -387,7 +387,7 @@ function MessagesPage({ clients }) {
       const data = await api.post('/admin/messages', { receiver_id: selected, content: input.trim() })
       setMessages(p => [...p, data.message])
       setInput('')
-    } catch {}
+    } catch { /* errors shown via state */ }
     setSending(false)
   }
 

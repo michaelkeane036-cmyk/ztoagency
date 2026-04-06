@@ -24,7 +24,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) redirect(user.role)
-  }, [user])
+  }, [user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function redirect(role) {
     if (next) { window.location.href = next; return }

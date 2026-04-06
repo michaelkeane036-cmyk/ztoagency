@@ -5,16 +5,12 @@ import { api } from '../api/client'
 export default function PaymentSuccess() {
   const [params]    = useSearchParams()
   const reference   = params.get('reference') || params.get('trxref')
-  const [state,     setState]  = useState('loading')
-  const [plan,      setPlan]   = useState('')
-  const [errMsg,    setErrMsg] = useState('')
+  const [state,  setState]  = useState(reference ? 'loading' : 'error')
+  const [plan,   setPlan]   = useState('')
+  const [errMsg, setErrMsg] = useState(reference ? '' : 'No payment reference found.')
 
   useEffect(() => {
-    if (!reference) {
-      setErrMsg('No payment reference found.')
-      setState('error')
-      return
-    }
+    if (!reference) return
     api.get(`/payments/verify/${encodeURIComponent(reference)}`)
       .then(data => { setPlan(data.plan || 'selected'); setState('success') })
       .catch(err => { setErrMsg(err.message || 'Verification failed.'); setState('error') })
