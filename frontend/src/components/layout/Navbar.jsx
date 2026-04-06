@@ -52,7 +52,7 @@ export default function Navbar() {
                 <Link to="/login" className="nav-login-link">Client Login</Link>
               )}
               <button
-                className="hamburger"
+                className={`hamburger${menuOpen ? ' active' : ''}`}
                 id="hamburger"
                 aria-label="Open navigation menu"
                 aria-expanded={menuOpen}

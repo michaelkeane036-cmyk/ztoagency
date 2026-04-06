@@ -21,7 +21,7 @@ const NAV = [
   { key:'reports',   label:'Reports',   icon:'ic-clipboard' },
   { key:'payments',  label:'Payments',  icon:'ic-gem'       },
   { key:'messages',  label:'Messages',  icon:'ic-mail'      },
-  { key:'settings',  label:'Settings',  icon:'ic-refresh'   },
+  { key:'settings',  label:'Settings',  icon:'ic-settings'  },
 ]
 
 function Sidebar({ user, active, onNav, onLogout }) {
